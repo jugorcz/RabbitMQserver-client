@@ -1,4 +1,3 @@
-import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -19,15 +18,16 @@ public class Z2_Producer {
         Channel channel = connection.createChannel();
 
         // exchange
-        String EXCHANGE_NAME = "exchange1";
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+        String EXCHANGE_NAME = "exchange2";
+        //channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT); //send to all clients
+        channel.exchangeDeclare(EXCHANGE_NAME, "direct"); //only to clients with the same key
 
         while (true) {
 
             // read msg
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter message: ");
-            String message = br.readLine();
+            String message[] = br.readLine().split(" ");
 
             // break condition
             if ("exit".equals(message)) {
@@ -35,8 +35,8 @@ public class Z2_Producer {
             }
 
             // publish
-            channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
-            System.out.println("Sent: " + message);
+            channel.basicPublish(EXCHANGE_NAME, message[0], null, message[1].getBytes("UTF-8"));
+            System.out.println("Sent: " + message[1] + " to " + message[0]);
         }
     }
 }

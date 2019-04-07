@@ -6,7 +6,10 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Z2_Consumer {
 
@@ -15,6 +18,10 @@ public class Z2_Consumer {
         // info
         System.out.println("Z2 CONSUMER");
 
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter client routing key: ");
+        String routingKey = reader.readLine();
+
         // connection & channel
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -22,12 +29,13 @@ public class Z2_Consumer {
         Channel channel = connection.createChannel();
 
         // exchange
-        String EXCHANGE_NAME = "exchange1";
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+        String EXCHANGE_NAME = "exchange2";
+        //channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+        channel.exchangeDeclare(EXCHANGE_NAME, "direct"); //only to clients with the same key
 
         // queue & bind
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, EXCHANGE_NAME, "");
+        channel.queueBind(queueName, EXCHANGE_NAME, routingKey);
         System.out.println("created queue: " + queueName);
 
         // consumer (message handling)
