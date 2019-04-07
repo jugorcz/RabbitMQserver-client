@@ -1,2 +1,2 @@
-#RabbitMQ simple server-client app
+# RabbitMQ simple server-client app
 
