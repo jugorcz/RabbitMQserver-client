@@ -29,9 +29,9 @@ public class Z2_Consumer {
         Channel channel = connection.createChannel();
 
         // exchange
-        String EXCHANGE_NAME = "exchange2";
+        String EXCHANGE_NAME = "exchange3";
         //channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-        channel.exchangeDeclare(EXCHANGE_NAME, "direct"); //only to clients with the same key
+        channel.exchangeDeclare(EXCHANGE_NAME, "topic"); //only to clients with the same key
 
         // queue & bind
         String queueName = channel.queueDeclare().getQueue();
@@ -52,3 +52,12 @@ public class Z2_Consumer {
         channel.basicConsume(queueName, true, consumer);
     }
 }
+
+/* When a queue is bound with "#" (hash) binding key - it will receive all the messages,
+ regardless of the routing key - like in fanout exchange.
+
+ When special characters "*" (star) and "#" (hash) aren't used in bindings, the topic exchange will behave just like a direct one.
+
+ consumer can have keys: #, a.b.*, *.b.*
+ producer has keys without special characters: a.b.c
+ */

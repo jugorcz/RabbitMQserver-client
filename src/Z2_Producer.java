@@ -18,9 +18,9 @@ public class Z2_Producer {
         Channel channel = connection.createChannel();
 
         // exchange
-        String EXCHANGE_NAME = "exchange2";
+        String EXCHANGE_NAME = "exchange3";
         //channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT); //send to all clients
-        channel.exchangeDeclare(EXCHANGE_NAME, "direct"); //only to clients with the same key
+        channel.exchangeDeclare(EXCHANGE_NAME, "topic"); //only to clients with the same key
 
         while (true) {
 
